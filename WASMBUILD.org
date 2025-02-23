@@ -50,3 +50,13 @@
 #+BEGIN_SRC shell
   emrun --browser=firefox bl_bounces_demo.html
 #+END_SRC
+
+* without build
+** start server
+#+BEGIN_SRC shell
+  git clone https://github.com/mnaza/blend2d-apps.git
+  cd blend2d-apps/build
+  python3 -m http.server 8081
+#+END_SRC
+
+** open in browser https://127.0.0.1:8081 and open any ~html~ file from list
