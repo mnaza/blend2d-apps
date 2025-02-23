@@ -1,0 +1,52 @@
+* requirements
+- git
+- cmake
+- clang
+
+* emscripten
+#+BEGIN_SRC shell
+  git clone https://github.com/emscripten-core/emsdk.git
+  cd emsdk
+  ./emsdk install latest
+  ./emsdk activate latest
+  source ./emsdk_env.sh
+  cd ..
+#+END_SRC
+
+* QT
+** build qt6
+#+BEGIN_SRC shell
+  git clone https://code.qt.io/qt/qt5.git qt6
+  cd qt6
+  ./init-repository
+  mkdir qt6-build
+  cd qt6-build
+  ../configure -prefix /tmp
+  cmake --build . --parallel 4
+  cd ..
+#+END_SRC
+** build qt6 for emscripten
+#+BEGIN_SRC shell
+  mkdir qt6-wasm
+  cd qt6-wasm
+  ../configure -qt-host-path ../qt6-build/qtbase -platform wasm-emscripten -prefix $PWD/qtbase
+  cmake --build .
+  cd ../..
+#+END_SRC
+
+* blend2d-apps
+#+BEGIN_SRC shell
+  git clone https://github.com/asmjit/asmjit
+  git clone https://github.com/blend2d/blend2d
+  git clone https://github.com/mnaza/blend2d-apps.git
+  cd blend2d-apps
+  mkdir build
+  cd build
+  ../../qt6/qt6-build-wasm/qtbase/bin/qt-cmake ..
+  make
+#+END_SRC
+
+* start example
+#+BEGIN_SRC shell
+  emrun --browser=firefox bl_bounces_demo.html
+#+END_SRC

@@ -1,5 +1,4 @@
 cmake_minimum_required(VERSION 3.16 FATAL_ERROR)
-
 cmake_policy(PUSH)
 cmake_policy(SET CMP0063 NEW) # Honor visibility properties.
 cmake_policy(SET CMP0077 NEW) # option() honors normal variables.
@@ -295,7 +294,8 @@ target_link_libraries(bl_bench blend2d::blend2d
   ${DEPENDENCY_QT_LIBRARIES}
   ${DEPENDENCY_SKIA_LIBRARIES}
   ${DEPENDENCY_CG_LIBRARIES}
-  ${DEPENDENCY_JUCE_LIBRARIES})
+  ${DEPENDENCY_JUCE_LIBRARIES}
+  "embind")
 target_link_directories(bl_bench PRIVATE ${DEPENDENCY_CAIRO_LIBRARY_DIRS})
 
 # Blend2D-Apps - Blend2D Qt Demos
@@ -319,17 +319,20 @@ set(BLEND2D_QT_DEMOS
 )
 
 if(Qt6Gui_FOUND)
+  qt_standard_project_setup()
   message("-- [blend2d-apps] adding Blend2D + Qt demos")
   foreach(target ${BLEND2D_QT_DEMOS})
-    add_executable(${target} WIN32
+    #set(CMAKE_EXECUTABLE_SUFFIX ".html")
+    qt_add_executable(${target} WIN32
       "bl_demos/${target}.cpp"
       "bl_demos/bl_qt_canvas.cpp"
       "bl_demos/bl_qt_canvas.h"
       "bl_demos/bl_qt_headers.h")
-    target_compile_features(${target} PUBLIC cxx_std_11)
-    set_property(TARGET ${target} PROPERTY AUTOMOC TRUE)
-    set_property(TARGET ${target} PROPERTY CXX_VISIBILITY_PRESET hidden)
-    target_link_libraries(${target} blend2d::blend2d Qt6::Gui Qt6::Widgets)
+    #target_compile_features(${target} PUBLIC cxx_std_11)
+    #target_link_options(${target} PRIVATE "-s WASM=1" "-s FETCH=1" "-s FULL_ES2=1" "-s FULL_ES3=1" "-s USE_WEBGL2=1" "--bind")
+    #set_property(TARGET ${target} PROPERTY AUTOMOC TRUE)
+    #set_property(TARGET ${target} PROPERTY CXX_VISIBILITY_PRESET hidden)
+    target_link_libraries(${target} PRIVATE blend2d::blend2d Qt6::Core Qt6::Gui Qt6::Widgets)
   endforeach()
 endif()
 
